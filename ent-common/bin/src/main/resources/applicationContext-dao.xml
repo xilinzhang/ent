@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+    http://www.springframework.org/schema/beans/spring-beans-4.1.xsd   
+    http://www.springframework.org/schema/tx   
+    http://www.springframework.org/schema/tx/spring-tx-4.1.xsd  
+    http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context-4.1.xsd
+    http://www.springframework.org/schema/data/jpa
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+	<jpa:repositories base-package="com.lianchuan.common.dao" />
+
+	<context:spring-configured />
+
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="initialSize" value="10" />
+		<property name="minIdle" value="10" />
+		<property name="timeBetweenEvictionRunsMillis" value="600000" />
+		<property name="driverClassName" value="${database.driverClassName}" />
+		<property name="url" value="${database.url}" />
+		<property name="username" value="${database.username}" />
+		<property name="password" value="${database.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="true" />
+		<property name="testWhileIdle" value="true" />
+		<property name="validationQuery" value="${database.validationQuery}" />
+	</bean>
+
+	<bean id="dataReadOnlySource" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="initialSize" value="10" />
+		<property name="minIdle" value="10" />
+		<property name="timeBetweenEvictionRunsMillis" value="600000" />
+		<property name="driverClassName" value="${database.driverClassName}" />
+		<property name="url" value="${database.readonly.url}" />
+		<property name="username" value="${database.readonly.username}" />
+		<property name="password" value="${database.readonly.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="true" />
+		<property name="testWhileIdle" value="true" />
+		<property name="validationQuery" value="${database.readonly.validationQuery}" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceXmlLocation" value="classpath:/persistence.xml" />
+		<property name="persistenceUnitName" value="persistenceUnit" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory
+				</prop>
+				<!-- validate:启动时验证创建数据库表结构 -->
+				<!-- create:启动时重新创建数据库表结构 -->
+				<!-- create-drop:启动时重新创建数据库表结构,退出时删除表结构 -->
+				<!-- update:启动时更新数据库结构 -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans> 

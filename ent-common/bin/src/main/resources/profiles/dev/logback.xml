@@ -1,0 +1,77 @@
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.out</target>
+		<encoder>
+			<pattern>%-5level %date{ISO8601} %logger{15} - %msg %rootException %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="ROLLING"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log/common.log</file>
+		<!-- only keep 3 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>log/common.log.%i</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%-5level %date{ISO8601} %logger - %msg %rootException %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="ERROR_LOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log/common_error.log</file>
+		<!-- only keep 3 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>log/common_error.log.%i</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%-5level %date{ISO8601} %logger - %msg %rootException %n
+			</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	<appender name="DATABASE_LOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log/common_database.log</file>
+		<!-- only keep 3 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>log/common_database.log.%i</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%-5level %date{ISO8601} %logger - %msg %rootException %n
+			</pattern>
+		</encoder>
+	</appender>
+	<logger name="com.lianchuan" level="DEBUG" />
+	<logger name="com.lianchuan.common.service.dao" level="DEBUG">
+		<appender-ref ref="DATABASE_LOG" />
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="ROLLING" />
+		<appender-ref ref="ERROR_LOG" />
+	</root>
+</configuration> 

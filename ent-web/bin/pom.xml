@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>com.lianchuan</groupId>
+		<artifactId>lianchuan</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>ent-web</artifactId>
+	<packaging>war</packaging>
+	<name>ent-web</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.lianchuan</groupId>
+			<artifactId>ent-common</artifactId>
+			<version>1.0</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>com.lianchuan</groupId>
+			<artifactId>ent-common</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<classifier>classes</classifier>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+
+	<profiles>
+		<!-- 开发环境 -->
+		<profile>
+			<id>dev</id>
+			<properties>
+				<profiles.active>dev</profiles.active>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<!-- 测试环境 -->
+		<profile>
+			<id>test</id>
+			<properties>
+				<profiles.active>test</profiles.active>
+			</properties>
+
+		</profile>
+		<!-- 线上环境 -->
+		<profile>
+			<id>online</id>
+			<properties>
+				<profiles.active>online</profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+				</configuration>
+				<version>3.1.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+			</plugin>
+		</plugins>
+		<!-- 过滤配置文件 -->
+		<resources>
+			<resource>
+				<directory>src/main/resources/profiles/${profiles.active}</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>profiles/**</exclude>
+				</excludes>
+			</resource>
+
+		</resources>
+	</build>
+</project>
